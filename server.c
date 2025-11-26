@@ -20,6 +20,7 @@ typedef struct {
 
 // Referências: https://idiotdeveloper.com/udp-client-server-implementation-in-c/ 
 //https://www.geeksforgeeks.org/computer-networks/udp-client-server-using-connect-c-implementation/
+// https://www.educative.io/answers/how-to-implement-udp-sockets-in-c
 int main(int argc, char **argv){
     if (argc != 2) {
         printf("Coloque os argumentos na ordem certa!"); //! melhorar
@@ -27,14 +28,15 @@ int main(int argc, char **argv){
     }
 
     char* ip = "127.0.0.1"; //!!? conferir se é isso msm
-    int porta = atoi(argv[1]);
+    int porta = 8080;
 
     int sockfd;
     struct sockaddr_in server_addr, client_addr;
-    char mensagem[1024];
+    char* message = "Hello Client";
+    char* client_message[2000];
+    char buffer[1024];
     socklen_t addr_size;
-    int n;
-
+    
     //!! MODIFICAR PARA PERMITIR IPV6
     // Criação do socket UDP
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -48,14 +50,24 @@ int main(int argc, char **argv){
     server_addr.sin_addr.s_addr = inet_addr(ip);
 
     // Junção do endereço do servidor com o socket
-    n = bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+    int n = bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
     if (n < 0){
         perror("[-]bind error");
         exit(1);
     }
 
+    printf("Listening for incoming messages...\n\n");
     // Recebimento do datagrama enviado pelo cliente
     int len = sizeof(client_addr);
+    int r = recvfrom(sockfd, client_message, sizeof(client_message), 0, (struct sockaddr*)&client_addr, &len);
+
+    // Recebimento da mensagem do servidor
+    buffer[n] = '\0';
+    puts(buffer);
+
+    // Envia a resposta
+    int maxline = 1000;
+    sendto(sockfd, message, maxline, 0,(struct sockaddr*)&client_addr, sizeof(client_addr));
 
     return 0;
 }
