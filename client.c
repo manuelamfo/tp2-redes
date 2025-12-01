@@ -8,10 +8,4 @@
 #include <netinet/in.h> // para os tipos in_port_t e in_addr_t
 #include <errno.h> // para mensagens de erro
 
-typedef struct {
-    // Tipo da mensagem
-    // (1= telemetria , 2=ACK, 3=equipe de drones , 4= conclusao )
-    uint16_t tipo;
-    //tamanho do payload em bytes
-    uint16_t tamanho;
-} headert;
+#include <estruturas.h>
